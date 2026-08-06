@@ -1,0 +1,13 @@
+{
+  "symbols": {
+    "src/pages/about.astro": {
+      "ipo_ts": 1785948079217,
+      "edit_count": 3,
+      "last_lines": 521,
+      "last_ts": 1785948101074,
+      "delisted": false,
+      "last_source": "onEdit",
+      "last_content_hash": "baae617b"
+    }
+  }
+}

@@ -14,6 +14,10 @@ const socials = getRenderableSocials(profile.socials);
 const sameAs = buildSameAsLinks(profile);
 const profileAvatar = profile.avatar;
 const profileAvatarSrc = typeof profileAvatar === 'string' ? profileAvatar : profileAvatar?.src;
+const githubUsername = 'Yiyue345';
+const githubProfileUrl = 'https://github.com/' + githubUsername;
+const githubContributionChartUrl = 'https://ghchart.rshah.org/409ba5/' + githubUsername;
+const githubContributionApiUrl = 'https://github-contributions-api.jogruber.de/v4/' + githubUsername + '?y=last';
 
 const personSchema = {
   '@context': 'https://schema.org',
@@ -205,6 +209,74 @@ const personSchema = {
         box-shadow: 0 8px 18px rgba(var(--accent-rgb), 0.12);
       }
 
+      .github-section {
+        margin-top: 1.5em;
+      }
+
+      .github-card {
+        padding: 1.5em;
+        background: var(--color-surface);
+        border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+        border-radius: 18px;
+        box-shadow: var(--shadow-card);
+      }
+
+      .github-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1em;
+        margin-bottom: 1em;
+      }
+
+      .github-card-title {
+        margin: 0;
+        color: var(--color-text-strong);
+        font-size: 1.05rem;
+      }
+
+      .github-profile-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45em;
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .github-profile-link:hover {
+        color: var(--accent);
+      }
+
+      .github-profile-link svg {
+        width: 17px;
+        height: 17px;
+      }
+
+      .github-heatmap-scroll {
+        overflow-x: auto;
+        padding-bottom: 0.25em;
+      }
+
+      .github-heatmap {
+        display: block;
+        width: 100%;
+        min-width: 680px;
+        height: auto;
+      }
+
+      .github-contribution-count {
+        margin: 0.85em 0 0;
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+        text-align: right;
+      }
+
+      .github-contribution-count span {
+        color: var(--color-text-strong);
+        font-weight: 600;
+      }
+
       @media (max-width: 980px) {
         .profile-card {
           grid-template-columns: 1fr;
@@ -227,6 +299,16 @@ const personSchema = {
       @media (max-width: 720px) {
         .profile-card {
           border-radius: 0;
+        }
+
+        .github-card {
+          padding: 1.2em;
+          border-radius: 0;
+        }
+
+        .github-card-header {
+          align-items: flex-start;
+          flex-direction: column;
         }
 
         .hero-title {
@@ -358,8 +440,82 @@ const personSchema = {
             )}
           </div>
         </article>
+
+        <section class="github-section" aria-labelledby="github-contributions-title">
+          <div class="section-header">
+            <span class="section-number">02</span>
+          </div>
+          <div class="github-card">
+            <div class="github-card-header">
+              <h3 id="github-contributions-title" class="github-card-title">GitHub Contributions</h3>
+              <a
+                class="github-profile-link"
+                href={githubProfileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+                <span>{githubUsername}</span>
+              </a>
+            </div>
+            <div class="github-heatmap-scroll">
+              <img
+                class="github-heatmap"
+                src={githubContributionChartUrl}
+                alt={githubUsername + ' 的 GitHub 贡献热力图'}
+                width="663"
+                height="104"
+                loading="lazy"
+                decoding="async"
+                referrerpolicy="no-referrer"
+              />
+            </div>
+            <p class="github-contribution-count" aria-live="polite">
+              过去一年的贡献数：
+              <span data-github-contribution-count data-url={githubContributionApiUrl}>加载中…</span>
+            </p>
+          </div>
+        </section>
       </div>
     </ContentCard>
   </div>
 
 </PageShell>
+
+<script>
+  const updateGithubContributionCount = async () => {
+    const countElement = document.querySelector('[data-github-contribution-count]');
+    if (!(countElement instanceof HTMLElement) || countElement.dataset.loaded === 'true') {
+      return;
+    }
+
+    const apiUrl = countElement.dataset.url;
+    if (!apiUrl) {
+      countElement.textContent = '暂时无法获取';
+      return;
+    }
+
+    try {
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error('GitHub contribution request failed');
+      }
+
+      const data = await response.json();
+      const total = Number(data?.total?.lastYear);
+      if (!Number.isFinite(total)) {
+        throw new Error('GitHub contribution response is invalid');
+      }
+
+      countElement.textContent = new Intl.NumberFormat('zh-CN').format(total);
+      countElement.dataset.loaded = 'true';
+    } catch {
+      countElement.textContent = '暂时无法获取';
+    }
+  };
+
+  document.addEventListener('astro:page-load', updateGithubContributionCount);
+  updateGithubContributionCount();
+</script>

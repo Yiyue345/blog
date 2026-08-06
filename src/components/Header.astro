@@ -17,6 +17,7 @@ const { transparent = true } = Astro.props;
 			<HeaderLink href="/">Home</HeaderLink>
 			<HeaderLink href="/blog">Blog</HeaderLink>
 			<HeaderLink href="/tags">Tags</HeaderLink>
+			<HeaderLink href="https://notes.yiyuemeow.com" target="_blank" rel="noopener noreferrer">Notes</HeaderLink>
 			<HeaderLink href="/about">About</HeaderLink>
 			<div class="nav-indicator" id="nav-indicator"></div>
 		</div>
@@ -73,6 +74,7 @@ const { transparent = true } = Astro.props;
 			<a href="/" class="mobile-nav-link">Home</a>
 			<a href="/blog" class="mobile-nav-link">Blog</a>
 			<a href="/tags" class="mobile-nav-link">Tags</a>
+			<a href="https://notes.yiyuemeow.com" target="_blank" rel="noopener noreferrer" class="mobile-nav-link">Notes</a>
 			<a href="/about" class="mobile-nav-link">About</a>
 		</nav>
 	</aside>
@@ -194,6 +196,7 @@ const { transparent = true } = Astro.props;
     .internal-links a:nth-child(2) { animation-delay: 0s; }
     .internal-links a:nth-child(3) { animation-delay: 0s; }
     .internal-links a:nth-child(4) { animation-delay: 0s; }
+    .internal-links a:nth-child(5) { animation-delay: 0s; }
 
     /* Active dot is now handled by .nav-indicator */
 

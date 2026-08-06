@@ -33,7 +33,7 @@ export interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  siteUrl: 'https://template.ulna520.top',
+  siteUrl: 'https://blog.yiyuemeow.com',
   siteTitle: 'ulBo Astro Theme',
   siteTitleSuffix: '个人博客',
   siteDescription: 'A configurable Astro blog theme with centralized config and zero-content defaults.',
