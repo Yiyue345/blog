@@ -34,11 +34,11 @@ export interface SiteConfig {
 
 export const siteConfig: SiteConfig = {
   siteUrl: 'https://blog.yiyuemeow.com',
-  siteTitle: 'ulBo Astro Theme',
-  siteTitleSuffix: '个人博客',
-  siteDescription: 'A configurable Astro blog theme with centralized config and zero-content defaults.',
+  siteTitle: 'YiYue\' s Blog',
+  siteTitleSuffix: '依月的碎碎念',
+  siteDescription: '一个用来存放妙妙博客的地方',
   locale: 'zh-CN',
-  headerGithubRepoUrl: 'https://github.com/xxy1103/ulbo-astro-theme-template',
+  headerGithubRepoUrl: 'https://github.com/Yiyue345/blog',
   faviconIco: '/favicon.ico',
 };
 

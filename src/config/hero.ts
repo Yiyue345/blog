@@ -1,4 +1,5 @@
 import defaultBackground from '../assets/blog-placeholder-1.webp';
+// import homeBackground from '../assets/homepage-background.jpg'
 
 /**
  * Hero copy and background settings for one page.
@@ -34,23 +35,23 @@ export interface HeroConfig {
 
 export const heroConfig: HeroConfig = {
   home: {
-    text: 'Build your ideas, one post at a time.',
-    subtitle: 'A clean Astro theme with centralized configuration.',
+    text: '主页',
+    subtitle: '感觉还是得写点东西在这',
     backgroundImage: defaultBackground.src,
   },
   blog: {
-    text: 'All Posts',
-    subtitle: 'Browse your writing archive.',
+    text: '文章',
+    subtitle: '一览无余',
     backgroundImage: defaultBackground.src,
   },
   tags: {
-    text: 'Tags',
-    subtitle: 'Explore topics by category and tag.',
+    text: '标签',
+    subtitle: '分门别类',
     backgroundImage: defaultBackground.src,
   },
   about: {
-    text: 'About',
-    subtitle: 'Introduce yourself and your work.',
+    text: '关于',
+    subtitle: '我去这是谁',
     backgroundImage: defaultBackground.src,
   },
   postDefaultBackground: defaultBackground.src,
