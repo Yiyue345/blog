@@ -20,6 +20,15 @@ type AnalyticsWindow = Window & {
 };
 
 const countFormatter = new Intl.NumberFormat('zh-CN');
+const VISITOR_COUNTED_AT_KEY = 'analytics:visitor-counted-at';
+const VISITOR_ORDINAL_KEY = 'analytics:visitor-ordinal';
+export const VISITOR_COUNT_WINDOW_MS = 24 * 60 * 60 * 1_000;
+
+interface SiteVisitReservation {
+	shouldCount: boolean;
+	marker?: string;
+	visitorOrdinal?: number;
+}
 
 function isNonNegativeInteger(value: unknown): value is number {
 	return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
@@ -27,6 +36,66 @@ function isNonNegativeInteger(value: unknown): value is number {
 
 function formatCount(value: number) {
 	return countFormatter.format(value);
+}
+
+export function isVisitorCountWindowActive(value: string | null, now = Date.now()) {
+	if (!value) return false;
+	const countedAt = Number(value);
+	return Number.isFinite(countedAt)
+		&& countedAt >= 0
+		&& countedAt <= now
+		&& now - countedAt < VISITOR_COUNT_WINDOW_MS;
+}
+
+function readStoredVisitorOrdinal() {
+	try {
+		const storedValue = window.localStorage.getItem(VISITOR_ORDINAL_KEY);
+		if (storedValue === null) return undefined;
+		const value = Number(storedValue);
+		return isNonNegativeInteger(value) ? value : undefined;
+	} catch {
+		return undefined;
+	}
+}
+
+function reserveSiteVisit(now = Date.now()): SiteVisitReservation {
+	try {
+		const countedAt = window.localStorage.getItem(VISITOR_COUNTED_AT_KEY);
+		if (isVisitorCountWindowActive(countedAt, now)) {
+			return {
+				shouldCount: false,
+				visitorOrdinal: readStoredVisitorOrdinal(),
+			};
+		}
+
+		const marker = String(now);
+		window.localStorage.setItem(VISITOR_COUNTED_AT_KEY, marker);
+		window.localStorage.removeItem(VISITOR_ORDINAL_KEY);
+		return { shouldCount: true, marker };
+	} catch {
+		// Browsers that block localStorage fall back to the previous page-view counting behavior.
+		return { shouldCount: true };
+	}
+}
+
+function saveVisitorOrdinal(reservation: SiteVisitReservation, value: unknown) {
+	if (!reservation.shouldCount || !isNonNegativeInteger(value)) return;
+	try {
+		window.localStorage.setItem(VISITOR_ORDINAL_KEY, String(value));
+	} catch {
+		// The displayed value can still use the response even when storage is unavailable.
+	}
+}
+
+function rollbackSiteVisitReservation(reservation: SiteVisitReservation) {
+	if (!reservation.marker) return;
+	try {
+		if (window.localStorage.getItem(VISITOR_COUNTED_AT_KEY) === reservation.marker) {
+			window.localStorage.removeItem(VISITOR_COUNTED_AT_KEY);
+		}
+	} catch {
+		// Nothing to roll back when localStorage is unavailable.
+	}
 }
 
 function setSiteTotalVisits(value: unknown) {
@@ -89,28 +158,34 @@ async function recordPageView() {
 	const path = window.location.pathname;
 	if (runtimeWindow.__analyticsLastPageView === path) return;
 	runtimeWindow.__analyticsLastPageView = path;
+	const siteVisit = reserveSiteVisit();
 
 	try {
 		const response = await fetch('/api/analytics', {
 			method: 'POST',
 			headers: { 'content-type': 'application/json' },
 			credentials: 'same-origin',
+			keepalive: true,
 			body: JSON.stringify({
 				path,
 				title: document.body.dataset.analyticsTitle || document.title,
 				type: getAnalyticsPageType(),
+				countSiteVisit: siteVisit.shouldCount,
 			}),
 		});
 		if (!response.ok) {
+			rollbackSiteVisitReservation(siteVisit);
 			setAnalyticsUnavailable();
 			return;
 		}
 
 		const payload = await response.json() as AnalyticsPayload;
-		setSiteTotalVisits(payload.site?.totalVisits);
+		saveVisitorOrdinal(siteVisit, payload.site?.totalVisits);
+		setSiteTotalVisits(siteVisit.visitorOrdinal ?? payload.site?.totalVisits);
 		setCurrentArticleViews(payload.article?.views);
 	} catch {
 		// Analytics must never interrupt page rendering or navigation.
+		rollbackSiteVisitReservation(siteVisit);
 		setAnalyticsUnavailable();
 	}
 }

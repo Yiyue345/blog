@@ -93,6 +93,9 @@ function normalizeVisit(body, requestUrl) {
   if (body.type !== undefined && body.type !== 'article' && body.type !== 'page') {
     throw new TypeError('type must be article or page');
   }
+  if (body.countSiteVisit !== undefined && typeof body.countSiteVisit !== 'boolean') {
+    throw new TypeError('countSiteVisit must be a boolean');
+  }
 
   const matchesArticlePath = /^\/blog\/[^/]+\/?$/.test(pathname);
   if (body.type === 'article' && !matchesArticlePath) {
@@ -106,6 +109,7 @@ function normalizeVisit(body, requestUrl) {
     path: pathname,
     isArticle,
     title: isArticle ? sanitizeTitle(body.title, fallbackTitle) : null,
+    countSiteVisit: body.countSiteVisit !== false,
   };
 }
 
@@ -194,7 +198,9 @@ export async function onRequestPost(context) {
     ]);
 
     const siteStats = normalizeSiteStats(storedSiteStats);
-    siteStats.totalVisits += 1;
+    if (visit.countSiteVisit) {
+      siteStats.totalVisits += 1;
+    }
     siteStats.lastVisitedAt = now;
 
     let articleStats = null;

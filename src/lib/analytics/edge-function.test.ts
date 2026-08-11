@@ -77,6 +77,29 @@ describe('analytics edge function', () => {
     expect([...store.values.keys()].filter((key) => key.startsWith('analytics/articles/'))).toHaveLength(0);
   });
 
+  it('can skip duplicate site visitors while still counting article views', async () => {
+    const store = new MemoryBlob();
+    const firstVisit = createVisitRequest({
+      path: '/blog/hello-world/',
+      title: 'Hello World',
+      type: 'article',
+      countSiteVisit: true,
+    });
+    const nextPageView = createVisitRequest({
+      path: '/blog/hello-world/',
+      title: 'Hello World',
+      type: 'article',
+      countSiteVisit: false,
+    });
+
+    await onRequestPost(createContext(store, firstVisit));
+    const response = await onRequestPost(createContext(store, nextPageView));
+    const payload = await response.json();
+
+    expect(payload.site.totalVisits).toBe(1);
+    expect(payload.article.views).toBe(2);
+  });
+
   it('returns a limited popular article ranking', async () => {
     const store = new MemoryBlob();
     await onRequestPost(createContext(store, createVisitRequest({ path: '/blog/first/', title: 'First' })));
@@ -109,10 +132,14 @@ describe('analytics edge function', () => {
     const invalidType = await onRequestPost(
       createContext(store, createVisitRequest({ path: '/about/', type: 'article' })),
     );
+    const invalidCountFlag = await onRequestPost(
+      createContext(store, createVisitRequest({ path: '/', countSiteVisit: 'yes' })),
+    );
 
     expect(crossOrigin.status).toBe(403);
     expect(invalidPath.status).toBe(400);
     expect(invalidType.status).toBe(400);
+    expect(invalidCountFlag.status).toBe(400);
     expect(store.values.size).toBe(0);
   });
 

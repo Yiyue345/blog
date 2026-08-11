@@ -2,7 +2,7 @@
 
 该功能已经接入前端页面。每次页面加载会调用 `POST /api/analytics` 记录访问，并在以下位置展示统计结果：
 
-- 全站页脚：站点总浏览次数与网站运行时间；
+- 全站页脚：当前浏览器对应的访客序号与网站运行时间；
 - 文章头图元信息：当前文章浏览次数；
 - Blog 文章列表：浏览次数前三的热门文章；
 - About：GitHub 热力图下方继续显示过去一年的贡献数。
@@ -28,16 +28,19 @@ Content-Type: application/json
 {
   "path": "/blog/example/",
   "title": "Example article",
-  "type": "article"
+  "type": "article",
+  "countSiteVisit": true
 }
 ```
 
-- 每次合法请求都会增加站点总访问量并更新最近访问时间。
+- 前端使用 `localStorage` 保存 24 小时访客标记；同一浏览器在此期间切换页面时会发送 `countSiteVisit: false`，不重复增加站点访客数。
+- 首次计数成功后，前端会在本地保存该浏览器对应的访客序号，供页脚持续显示。
+- `countSiteVisit` 省略时默认为 `true`，保持旧客户端兼容；无论其取值如何，合法请求都会更新最近访问时间。
 - 只有 `/blog/<slug>/` 形式的路径会同时增加文章浏览量。
 - `title` 对文章访问可选；未提供时会从路径中生成。
 - 前端会明确发送 `type: "article"` 或 `type: "page"`，避免把 `/blog/2/` 这样的分页路径误判为文章；未提供 `type` 的旧请求仍按路径判断。
 - 跨域浏览器写入会被拒绝。
-- 不存储 IP、User-Agent、Cookie 或其他访客身份数据。
+- 服务端不存储 IP、User-Agent、Cookie 或其他访客身份数据；浏览器本地只保存计数时间和访客序号。
 
 ### 查询统计
 
@@ -45,7 +48,7 @@ Content-Type: application/json
 GET /api/analytics?limit=10
 ```
 
-返回站点总访问量、最近访问时间和按浏览量降序排列的热门文章。`limit` 默认值为 10，取值范围为 1–20。
+返回站点累计访客数、最近访问时间和按浏览量降序排列的热门文章。`limit` 默认值为 10，取值范围为 1–20。
 
 ## 数据说明
 

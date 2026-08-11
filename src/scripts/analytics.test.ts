@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { formatSiteRuntime } from './analytics';
+import {
+	formatSiteRuntime,
+	isVisitorCountWindowActive,
+	VISITOR_COUNT_WINDOW_MS,
+} from './analytics';
 
 describe('site runtime formatter', () => {
 	it('formats elapsed days and a zero-padded clock', () => {
@@ -12,5 +16,23 @@ describe('site runtime formatter', () => {
 	it('handles invalid and future start times safely', () => {
 		expect(formatSiteRuntime('invalid', 0)).toBe('暂时无法计算');
 		expect(formatSiteRuntime('2026-08-05T00:00:00.000Z', 0)).toBe('0 天 00:00:00');
+	});
+});
+
+describe('visitor count window', () => {
+	it('keeps the visitor marker active for 24 hours', () => {
+		const now = Date.parse('2026-08-12T00:00:00.000Z');
+		const countedAt = String(now - VISITOR_COUNT_WINDOW_MS + 1);
+
+		expect(isVisitorCountWindowActive(countedAt, now)).toBe(true);
+		expect(isVisitorCountWindowActive(String(now - VISITOR_COUNT_WINDOW_MS), now)).toBe(false);
+	});
+
+	it('rejects missing, invalid, and future markers', () => {
+		const now = Date.parse('2026-08-12T00:00:00.000Z');
+
+		expect(isVisitorCountWindowActive(null, now)).toBe(false);
+		expect(isVisitorCountWindowActive('invalid', now)).toBe(false);
+		expect(isVisitorCountWindowActive(String(now + 1), now)).toBe(false);
 	});
 });
