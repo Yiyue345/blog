@@ -111,7 +111,84 @@ if (last > 1) paginationList.push(last);
           background-color 0.2s cubic-bezier(0.2, 0, 0, 1),
           border-color 0.2s cubic-bezier(0.2, 0, 0, 1),
           box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1),
-          transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+        transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+      }
+
+      .popular-articles {
+        margin: 0 0 2em;
+        padding: 1.15em 1.25em;
+        background: var(--color-surface-elevated);
+        border: 1px solid var(--color-border-subtle);
+        border-radius: 12px;
+      }
+
+      .popular-articles[hidden] {
+        display: none;
+      }
+
+      .popular-articles-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1em;
+        margin-bottom: 0.45em;
+      }
+
+      .popular-articles-title {
+        margin: 0;
+        font-size: 1.05rem;
+        color: var(--color-text-strong);
+      }
+
+      .popular-articles-note {
+        color: var(--color-text-muted);
+        font-size: 0.8rem;
+      }
+
+      .popular-articles-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .popular-articles-list :global(.popular-article-item) {
+        display: grid;
+        grid-template-columns: 2.2em minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 0.75em;
+        padding: 0.72em 0;
+        border-bottom: 1px solid var(--color-border-subtle);
+      }
+
+      .popular-articles-list :global(.popular-article-item:last-child) {
+        border-bottom: none;
+      }
+
+      .popular-articles-list :global(.popular-article-rank) {
+        color: var(--accent);
+        font-size: 1.1rem;
+        font-weight: 700;
+        opacity: 0.55;
+      }
+
+      .popular-articles-list :global(.popular-article-link) {
+        min-width: 0;
+        color: var(--color-text);
+        font-weight: 600;
+        text-decoration: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .popular-articles-list :global(.popular-article-link:hover) {
+        color: var(--accent);
+      }
+
+      .popular-articles-list :global(.popular-article-views) {
+        color: var(--color-text-muted);
+        font-size: 0.82rem;
+        white-space: nowrap;
       }
 
       .blog-posts-list :global(.blog-post-item:last-child) {
@@ -235,6 +312,21 @@ if (last > 1) paginationList.push(last);
       }
 
       @media (max-width: 720px) {
+        .popular-articles {
+          margin-bottom: 1.5em;
+          padding: 1em;
+        }
+
+        .popular-articles-list :global(.popular-article-item) {
+          grid-template-columns: 1.8em minmax(0, 1fr);
+          gap: 0.55em;
+        }
+
+        .popular-articles-list :global(.popular-article-views) {
+          grid-column: 2;
+          margin-top: -0.5em;
+        }
+
         .blog-posts-list :global(.blog-post-title) {
           font-size: 1.2em;
         }
@@ -431,6 +523,13 @@ if (last > 1) paginationList.push(last);
       ? `这里收录了所有的 ${page.total} 篇文章 (第 ${page.currentPage} / ${page.lastPage} 页)`
       : '当前没有文章内容。请在 src/content/blog/ 添加 .md/.mdx 文件后重新构建。'}
   >
+		<section class="popular-articles" data-popular-articles hidden aria-labelledby="popular-articles-title">
+			<div class="popular-articles-header">
+				<h2 id="popular-articles-title" class="popular-articles-title">热门文章</h2>
+				<span class="popular-articles-note">按浏览次数</span>
+			</div>
+			<ol class="popular-articles-list" data-popular-articles-list></ol>
+		</section>
 
         <div class="blog-posts-list">
           {page.data.length > 0 ? (

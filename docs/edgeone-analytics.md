@@ -1,6 +1,13 @@
 # EdgeOne 访问统计后端
 
-该功能仅提供后端 API，当前没有接入任何前端页面，也不会自动发送访问记录。部署后可以先通过 API 验证数据；后续接入无界面的统计请求或可见组件时，再由页面调用 `POST /api/analytics`。
+该功能已经接入前端页面。每次页面加载会调用 `POST /api/analytics` 记录访问，并在以下位置展示统计结果：
+
+- 全站页脚：站点总浏览次数与网站运行时间；
+- 文章头图元信息：当前文章浏览次数；
+- Blog 文章列表：浏览次数前三的热门文章；
+- About：GitHub 热力图下方继续显示过去一年的贡献数。
+
+网站建立时间配置在 `src/config/site.ts` 的 `siteCreatedAt`，页脚计时器每秒更新一次。
 
 ## 部署前配置
 
@@ -20,13 +27,15 @@ Content-Type: application/json
 
 {
   "path": "/blog/example/",
-  "title": "Example article"
+  "title": "Example article",
+  "type": "article"
 }
 ```
 
 - 每次合法请求都会增加站点总访问量并更新最近访问时间。
 - 只有 `/blog/<slug>/` 形式的路径会同时增加文章浏览量。
 - `title` 对文章访问可选；未提供时会从路径中生成。
+- 前端会明确发送 `type: "article"` 或 `type: "page"`，避免把 `/blog/2/` 这样的分页路径误判为文章；未提供 `type` 的旧请求仍按路径判断。
 - 跨域浏览器写入会被拒绝。
 - 不存储 IP、User-Agent、Cookie 或其他访客身份数据。
 

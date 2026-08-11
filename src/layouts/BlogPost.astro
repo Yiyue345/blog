@@ -702,6 +702,10 @@ const articleSchema = {
                             <span>{readingTime} 分钟</span>
                         </div>
                     )}
+					<div class="meta-item">
+						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+						<span data-article-view-count aria-live="polite">加载中…</span>
+					</div>
                 </div>
 				<div class="meta-row">
 					<button class="pdf-export-button" type="button" data-pdf-export data-pdf-title={title} aria-label={`将《${title}》导出为 PDF`}>

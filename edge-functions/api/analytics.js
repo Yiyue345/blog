@@ -90,7 +90,16 @@ function normalizeVisit(body, requestUrl) {
   }
 
   const pathname = visitUrl.pathname.replace(/\/{2,}/g, '/');
-  const isArticle = /^\/blog\/[^/]+\/?$/.test(pathname);
+  if (body.type !== undefined && body.type !== 'article' && body.type !== 'page') {
+    throw new TypeError('type must be article or page');
+  }
+
+  const matchesArticlePath = /^\/blog\/[^/]+\/?$/.test(pathname);
+  if (body.type === 'article' && !matchesArticlePath) {
+    throw new TypeError('article type requires an article path');
+  }
+
+  const isArticle = body.type === 'article' || (body.type === undefined && matchesArticlePath);
   const fallbackTitle = isArticle ? deriveTitleFromPath(pathname) : '';
 
   return {

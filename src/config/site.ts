@@ -30,6 +30,10 @@ export interface SiteConfig {
    * Global favicon ico path served from the public directory.
    */
   faviconIco: string;
+  /**
+   * Site launch time used by the live footer timer.
+   */
+  siteCreatedAt: string;
 }
 
 export const siteConfig: SiteConfig = {
@@ -40,6 +44,16 @@ export const siteConfig: SiteConfig = {
   locale: 'zh-CN',
   headerGithubRepoUrl: 'https://github.com/Yiyue345/blog',
   faviconIco: '/favicon.ico',
+  siteCreatedAt: '2026-08-05T19:09:21+08:00',
 };
 
-export const { siteUrl, siteTitle, siteTitleSuffix, siteDescription, locale, headerGithubRepoUrl, faviconIco } = siteConfig;
+export const {
+  siteUrl,
+  siteTitle,
+  siteTitleSuffix,
+  siteDescription,
+  locale,
+  headerGithubRepoUrl,
+  faviconIco,
+  siteCreatedAt,
+} = siteConfig;

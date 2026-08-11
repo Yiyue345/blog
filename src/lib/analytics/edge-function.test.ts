@@ -65,6 +65,18 @@ describe('analytics edge function', () => {
     expect([...store.values.keys()].filter((key) => key.startsWith('analytics/articles/'))).toHaveLength(0);
   });
 
+  it('does not treat blog pagination as an article when the client marks it as a page', async () => {
+    const store = new MemoryBlob();
+    const response = await onRequestPost(
+      createContext(store, createVisitRequest({ path: '/blog/2/', type: 'page' })),
+    );
+    const payload = await response.json();
+
+    expect(payload.site.totalVisits).toBe(1);
+    expect(payload.article).toBeNull();
+    expect([...store.values.keys()].filter((key) => key.startsWith('analytics/articles/'))).toHaveLength(0);
+  });
+
   it('returns a limited popular article ranking', async () => {
     const store = new MemoryBlob();
     await onRequestPost(createContext(store, createVisitRequest({ path: '/blog/first/', title: 'First' })));
@@ -94,9 +106,13 @@ describe('analytics edge function', () => {
     const invalidPath = await onRequestPost(
       createContext(store, createVisitRequest({ path: 'https://example.com/blog/fake/' })),
     );
+    const invalidType = await onRequestPost(
+      createContext(store, createVisitRequest({ path: '/about/', type: 'article' })),
+    );
 
     expect(crossOrigin.status).toBe(403);
     expect(invalidPath.status).toBe(400);
+    expect(invalidType.status).toBe(400);
     expect(store.values.size).toBe(0);
   });
 

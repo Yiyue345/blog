@@ -303,21 +303,21 @@
     },
     ".astro/data-store.json": {
       "ipo_ts": 1786036029672,
-      "edit_count": 14,
+      "edit_count": 16,
       "last_lines": 1,
-      "last_ts": 1786038219773,
+      "last_ts": 1786457488099,
       "delisted": false,
       "last_source": "onEdit",
-      "last_content_hash": "bf0de583"
+      "last_content_hash": "1c58d6d4"
     },
     ".idea/workspace.xml": {
       "ipo_ts": 1786036342773,
-      "edit_count": 1,
-      "last_lines": 181,
-      "last_ts": 1786036342773,
+      "edit_count": 3,
+      "last_lines": 208,
+      "last_ts": 1786457789469,
       "delisted": false,
       "last_source": "onEdit",
-      "last_content_hash": "71b6cd06"
+      "last_content_hash": "2f8c469e"
     },
     "src/content/blog/一种使用 Codex 快速学习的方法，以复习《现代检测技术与系统》为例.md": {
       "ipo_ts": 1786038219153,
@@ -2892,6 +2892,33 @@
       "delisted": false,
       "last_source": "onEdit",
       "last_content_hash": "d356fb2"
+    },
+    "src/content/blog/为何要摒弃“做题区”思维.md": {
+      "ipo_ts": 1786457487516,
+      "edit_count": 1,
+      "last_lines": 39,
+      "last_ts": 1786457487516,
+      "delisted": false,
+      "last_source": "onEdit",
+      "last_content_hash": "58f21341"
+    },
+    "src/components/Footer.astro": {
+      "ipo_ts": 1786457616594,
+      "edit_count": 2,
+      "last_lines": 80,
+      "last_ts": 1786457783740,
+      "delisted": false,
+      "last_source": "onEdit",
+      "last_content_hash": "b14079e5"
+    },
+    ".playwright-mcp/console-2026-08-11T12-46-33-899Z.log": {
+      "ipo_ts": 1786457751623,
+      "edit_count": 1,
+      "last_lines": 46,
+      "last_ts": 1786457751623,
+      "delisted": false,
+      "last_source": "onEdit",
+      "last_content_hash": "f151daa1"
     }
   }
 }

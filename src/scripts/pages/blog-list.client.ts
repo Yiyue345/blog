@@ -1,4 +1,5 @@
 import { setupParallax } from './parallax';
+import { loadPopularArticles } from '../analytics';
 
 function setupScrollReveal() {
 	const targets = Array.from(document.querySelectorAll<HTMLElement>('.scroll-reveal'));
@@ -48,5 +49,6 @@ function setupScrollReveal() {
 export function initBlogListPage() {
 	setupScrollReveal();
 	setupParallax({ desktopRise: 180, coarsePointerRise: 72 });
+	void loadPopularArticles();
 }
 

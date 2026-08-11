@@ -69,7 +69,11 @@ const {
 		{nextURL && <link rel="next" href={nextURL} />}
 		<slot name="head" />
 	</head>
-	<body data-page-id={pageId}>
+	<body
+		data-page-id={pageId}
+		data-analytics-content-type={type === 'article' ? 'article' : 'page'}
+		data-analytics-title={type === 'article' ? title : undefined}
+	>
 		<Header transparent={transparentHeader} />
 		<div id="main-content">
 			{useMainWrapper ? (
@@ -83,6 +87,7 @@ const {
 		</div>
 		<SearchModal />
 		<script>
+			import { initSiteAnalytics } from '../scripts/analytics';
 			import { runCurrentPageEnhancements } from '../scripts/pages/registry';
 			import { setupMainScrollRestoration } from '../scripts/scroll-restoration';
 
@@ -92,7 +97,10 @@ const {
 				__globalPageEnhancementsHandler?: () => void;
 			};
 
-			const handlePageLoad = () => runCurrentPageEnhancements();
+			const handlePageLoad = () => {
+				runCurrentPageEnhancements();
+				initSiteAnalytics();
+			};
 
 			if (runtimeWindow.__globalPageEnhancementsHandler) {
 				document.removeEventListener('astro:page-load', runtimeWindow.__globalPageEnhancementsHandler);
