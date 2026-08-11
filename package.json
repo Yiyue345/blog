@@ -26,6 +26,7 @@
     "@astrojs/mdx": "^5.0.6",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
+    "@edgeone/pages-blob": "^0.0.16",
     "astro": "^6.4.8",
     "fuse.js": "^7.1.0",
     "katex": "^0.16.28",
