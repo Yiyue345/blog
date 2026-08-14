@@ -57,10 +57,10 @@ export interface ProfileConfig {
 export const profileConfig: ProfileConfig = {
   avatar: avatar,
   name: '依月',
-  title: '无业游民（大学生',
-  bio: '就是个苦逼的学生，以及 xnn（划掉），平时喜欢写点有的没的的东西，虽然输出的内容和胡说八道差不太多',
+  title: '无业大学生',
+  bio: '平时喜欢写点有的没的的东西，虽然输出的内容和胡说八道差不太多。第一次写博客，都可以看喵',
   location: '桂林',
-  email: 'e@mai.l',
+  email: 'me@yiyuemeow.com',
   githubProfileUrl: 'https://github.com/Yiyue345/',
   socials: [
     { key: 'github', label: 'GitHub', url: 'https://github.com/Yiyue345/' },

@@ -30,6 +30,8 @@ interface SiteVisitReservation {
 	visitorOrdinal?: number;
 }
 
+type AnalyticsPageType = 'article' | 'page';
+
 function isNonNegativeInteger(value: unknown): value is number {
 	return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
 }
@@ -61,17 +63,17 @@ function readStoredVisitorOrdinal() {
 function reserveSiteVisit(now = Date.now()): SiteVisitReservation {
 	try {
 		const countedAt = window.localStorage.getItem(VISITOR_COUNTED_AT_KEY);
+		const visitorOrdinal = readStoredVisitorOrdinal();
 		if (isVisitorCountWindowActive(countedAt, now)) {
 			return {
 				shouldCount: false,
-				visitorOrdinal: readStoredVisitorOrdinal(),
+				visitorOrdinal,
 			};
 		}
 
 		const marker = String(now);
 		window.localStorage.setItem(VISITOR_COUNTED_AT_KEY, marker);
-		window.localStorage.removeItem(VISITOR_ORDINAL_KEY);
-		return { shouldCount: true, marker };
+		return { shouldCount: true, marker, visitorOrdinal };
 	} catch {
 		// Browsers that block localStorage fall back to the previous page-view counting behavior.
 		return { shouldCount: true };
@@ -79,7 +81,10 @@ function reserveSiteVisit(now = Date.now()): SiteVisitReservation {
 }
 
 function saveVisitorOrdinal(reservation: SiteVisitReservation, value: unknown) {
-	if (!reservation.shouldCount || !isNonNegativeInteger(value)) return;
+	if (
+		!isNonNegativeInteger(value)
+		|| (!reservation.shouldCount && reservation.visitorOrdinal !== undefined)
+	) return;
 	try {
 		window.localStorage.setItem(VISITOR_ORDINAL_KEY, String(value));
 	} catch {
@@ -153,12 +158,24 @@ function getAnalyticsPageType() {
 	return document.body.dataset.analyticsContentType === 'article' ? 'article' : 'page';
 }
 
+export function shouldRequestAnalytics(
+	pageType: AnalyticsPageType,
+	shouldCountSiteVisit: boolean,
+	visitorOrdinal?: number,
+) {
+	return pageType === 'article' || shouldCountSiteVisit || visitorOrdinal === undefined;
+}
+
 async function recordPageView() {
 	const runtimeWindow = window as AnalyticsWindow;
 	const path = window.location.pathname;
 	if (runtimeWindow.__analyticsLastPageView === path) return;
 	runtimeWindow.__analyticsLastPageView = path;
+	const pageType = getAnalyticsPageType();
 	const siteVisit = reserveSiteVisit();
+	setSiteTotalVisits(siteVisit.visitorOrdinal);
+
+	if (!shouldRequestAnalytics(pageType, siteVisit.shouldCount, siteVisit.visitorOrdinal)) return;
 
 	try {
 		const response = await fetch('/api/analytics', {
@@ -169,7 +186,7 @@ async function recordPageView() {
 			body: JSON.stringify({
 				path,
 				title: document.body.dataset.analyticsTitle || document.title,
-				type: getAnalyticsPageType(),
+				type: pageType,
 				countSiteVisit: siteVisit.shouldCount,
 			}),
 		});
@@ -181,7 +198,11 @@ async function recordPageView() {
 
 		const payload = await response.json() as AnalyticsPayload;
 		saveVisitorOrdinal(siteVisit, payload.site?.totalVisits);
-		setSiteTotalVisits(siteVisit.visitorOrdinal ?? payload.site?.totalVisits);
+		setSiteTotalVisits(
+			siteVisit.shouldCount
+				? payload.site?.totalVisits
+				: siteVisit.visitorOrdinal ?? payload.site?.totalVisits,
+		);
 		setCurrentArticleViews(payload.article?.views);
 	} catch {
 		// Analytics must never interrupt page rendering or navigation.
@@ -228,7 +249,6 @@ export async function loadPopularArticles() {
 		if (!response.ok) return;
 
 		const payload = await response.json() as AnalyticsPayload;
-		setSiteTotalVisits(payload.site?.totalVisits);
 		const articles = Array.isArray(payload.popularArticles)
 			? payload.popularArticles
 				.map(normalizePopularArticle)

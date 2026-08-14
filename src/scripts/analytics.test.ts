@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	formatSiteRuntime,
 	isVisitorCountWindowActive,
+	shouldRequestAnalytics,
 	VISITOR_COUNT_WINDOW_MS,
 } from './analytics';
 
@@ -34,5 +35,17 @@ describe('visitor count window', () => {
 		expect(isVisitorCountWindowActive(null, now)).toBe(false);
 		expect(isVisitorCountWindowActive('invalid', now)).toBe(false);
 		expect(isVisitorCountWindowActive(String(now + 1), now)).toBe(false);
+	});
+});
+
+describe('analytics request cache', () => {
+	it('skips ordinary page requests while a visitor ordinal is cached', () => {
+		expect(shouldRequestAnalytics('page', false, 19)).toBe(false);
+	});
+
+	it('still requests expired, missing, and article analytics', () => {
+		expect(shouldRequestAnalytics('page', true, 19)).toBe(true);
+		expect(shouldRequestAnalytics('page', false)).toBe(true);
+		expect(shouldRequestAnalytics('article', false, 19)).toBe(true);
 	});
 });
