@@ -42,13 +42,13 @@ npm run dev
 
 通常只需要修改以下文件：
 
-| 文件 | 用途 |
-| --- | --- |
-| `src/config/site.ts` | 网站地址、标题、描述和仓库链接 |
-| `src/config/profile.ts` | 头像、个人介绍和社交链接 |
-| `src/config/hero.ts` | 首页与各页面的标题、背景图 |
-| `src/content/blog/` | Markdown / MDX 文章 |
-| `public/image/` | 文章与页面图片 |
+| 文件                      | 用途                |
+| ----------------------- | ----------------- |
+| `src/config/site.ts`    | 网站地址、标题、描述和仓库链接   |
+| `src/config/profile.ts` | 头像、个人介绍和社交链接      |
+| `src/config/hero.ts`    | 首页与各页面的标题、背景图     |
+| `src/content/blog/`     | Markdown / MDX 文章 |
+| `public/image/`         | 文章与页面图片           |
 
 ## 写一篇文章
 

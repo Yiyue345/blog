@@ -12,7 +12,14 @@ const { transparent = true } = Astro.props;
 <header class:list={[{ transparent }]} transition:persist transition:name="header" transition:animate="none">
 	<div id="navigation-progress" aria-hidden="true"></div>
 	<nav>
-		<h2><a href="/">{siteTitle}</a></h2>
+		<h2>
+			<a class="site-brand" href="/">
+				<span class="site-brand-icon" aria-hidden="true">
+					<img src="/site-icon.png" alt="" width="36" height="36" decoding="async" />
+				</span>
+				<span class="site-brand-title">{siteTitle}</span>
+			</a>
+		</h2>
 		<div class="internal-links">
 			<HeaderLink href="/">Home</HeaderLink>
 			<HeaderLink href="/blog">Blog</HeaderLink>
@@ -135,11 +142,49 @@ const { transparent = true } = Astro.props;
 	h2 a.active {
 		text-decoration: none;
         position: relative;
-        display: inline-block;
+	}
+
+	.site-brand {
+		--site-brand-icon-size: 36px;
+		display: inline-flex;
+		align-items: center;
+		height: 64px;
+		padding: 0 0.5em;
+		box-sizing: border-box;
+		white-space: nowrap;
+	}
+
+	.site-brand-icon {
+		display: block;
+		width: 0;
+		height: var(--site-brand-icon-size);
+		margin-right: 0;
+		overflow: hidden;
+		flex: 0 0 auto;
+		opacity: 0;
+		transform: translateX(-8px) scale(0.86);
+		transform-origin: left center;
+		transition:
+			width 0.45s cubic-bezier(0.2, 0, 0, 1),
+			margin-right 0.45s cubic-bezier(0.2, 0, 0, 1),
+			opacity 0.24s ease,
+			transform 0.45s cubic-bezier(0.2, 0, 0, 1);
+	}
+
+	.site-brand-icon img {
+		display: block;
+		width: var(--site-brand-icon-size);
+		height: var(--site-brand-icon-size);
+		object-fit: contain;
+	}
+
+	.site-brand-title {
+		position: relative;
+		display: inline-block;
 	}
 
     /* Exquisite Underline Animation (Logo) */
-    h2 a::after {
+    .site-brand-title::after {
         content: '';
         position: absolute;
         width: 100%;
@@ -152,7 +197,7 @@ const { transparent = true } = Astro.props;
         transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
     
-    h2 a:hover::after {
+    .site-brand:hover .site-brand-title::after {
         transform: scaleX(1);
         transform-origin: bottom left;
     }
@@ -438,6 +483,10 @@ const { transparent = true } = Astro.props;
 			padding: 0 0.75em;
 		}
 
+		.site-brand {
+			--site-brand-icon-size: 32px;
+		}
+
 		.internal-links {
 			display: none;
 		}
@@ -516,6 +565,13 @@ const { transparent = true } = Astro.props;
         border-bottom: 1px solid var(--color-header-glass-border);
     }
 
+	header.transparent.scrolled .site-brand-icon {
+		width: var(--site-brand-icon-size);
+		margin-right: 0.5rem;
+		opacity: 1;
+		transform: translateX(0) scale(1);
+	}
+
     header.transparent.scrolled > nav .internal-links a,
     header.transparent.scrolled > nav .header-actions > a,
     header.transparent.scrolled > nav h2 a,
@@ -531,6 +587,12 @@ const { transparent = true } = Astro.props;
 
 	header.transparent.scrolled #navigation-progress {
 		background: var(--accent);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.site-brand-icon {
+			transition: none;
+		}
 	}
 </style>
 
