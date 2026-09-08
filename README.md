@@ -4,7 +4,8 @@
 
 [![Astro 6](https://img.shields.io/badge/Astro-6-BC52EE?logo=astro)](https://astro.build/)
 [![Node.js 22+](https://img.shields.io/badge/Node.js-22%2B-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![Code License: MIT](https://img.shields.io/badge/Code-MIT-blue.svg)](./LICENSE)
+[![Content License: CC BY-SA 4.0](https://img.shields.io/badge/Content-CC%20BY--SA%204.0-lightgrey.svg)](./LICENSE-CONTENT.md)
 
 一个简洁、响应式、开箱即用的 Astro 个人博客主题。
 
@@ -120,4 +121,6 @@ npm run deploy
 
 ## 许可证
 
-[MIT](./LICENSE)
+- 源代码和软件文档采用 [MIT 许可证](./LICENSE)。
+- 除另有说明外，原创文章及其他非代码内容采用 [CC BY-SA 4.0](./LICENSE-CONTENT.md) 许可。
+- 第三方素材及明确标注其他协议的内容仍遵循其原有许可。

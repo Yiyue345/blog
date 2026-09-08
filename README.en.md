@@ -407,4 +407,6 @@ Issues and PRs are welcome, especially for deeper Hexo migration compatibility, 
 
 ## License
 
-This project is licensed under the MIT License. See `LICENSE`.
+- Source code and software documentation are licensed under the [MIT License](./LICENSE).
+- Unless otherwise noted, original articles and other non-code content are licensed under [CC BY-SA 4.0](./LICENSE-CONTENT.md).
+- Third-party materials and content explicitly marked with another license remain subject to their original terms.

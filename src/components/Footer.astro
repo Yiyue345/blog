@@ -9,6 +9,15 @@ const socials = getRenderableSocials(profileConfig.socials);
 
 <footer transition:animate="none">
 	<p class="copyright">&copy; {today.getFullYear()} {profileConfig.name}. Powered by {siteTitle}.</p>
+	<p class="content-license">
+		除另有说明外，本站原创内容采用
+		<a
+			href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh-hans"
+			target="_blank"
+			rel="license noreferrer"
+		>CC BY-SA 4.0</a>
+		许可。
+	</p>
 	<div class="social-links">
 		{socials.map((social) => (
 			<a
@@ -41,6 +50,22 @@ const socials = getRenderableSocials(profileConfig.socials);
 	.copyright {
 		margin: 0;
 		font-size: 0.95em;
+	}
+
+	.content-license {
+		margin: 0.4em 0 0;
+		font-size: 0.88em;
+	}
+
+	.content-license a {
+		color: inherit;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.18em;
+		transition: color 0.2s ease;
+	}
+
+	.content-license a:hover {
+		color: var(--color-text);
 	}
 
 	.social-links {
