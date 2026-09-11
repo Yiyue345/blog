@@ -5,9 +5,9 @@ date: 2026-08-04T20:00:00+08:00
 updated: 2026-08-04T20:00:00+08:00
 draft: false
 categories:
-  - 流程
+  - 指南
 tags:
-  - 流程
+  - 指南
   - AI
   - 学习
   - 应试
