@@ -1,0 +1,145 @@
+---
+import type { FriendLink } from '../config/friends';
+
+interface Props {
+  friend: FriendLink;
+}
+
+const { friend } = Astro.props;
+const isExternal = /^https?:\/\//.test(friend.url);
+const displayUrl = isExternal
+  ? new URL(friend.url).hostname.replace(/^www\./, '')
+  : friend.url.replace(/^mailto:/, '');
+const initial = friend.name.trim().charAt(0) || '友';
+---
+
+<a
+  class:list={['friend-card', { 'friend-card-featured': friend.featured }]}
+  href={friend.url}
+  target={isExternal ? '_blank' : undefined}
+  rel={isExternal ? 'noopener noreferrer' : undefined}
+>
+  {friend.avatar ? (
+    <img
+      class="friend-avatar"
+      src={friend.avatar}
+      alt=""
+      width="56"
+      height="56"
+      loading="lazy"
+      decoding="async"
+    />
+  ) : (
+    <span class="friend-avatar friend-avatar-placeholder" aria-hidden="true">{initial}</span>
+  )}
+
+  <span class="friend-content">
+    <strong class="friend-name">{friend.name}</strong>
+    <span class="friend-description">{friend.description}</span>
+    <span class="friend-domain">{displayUrl}</span>
+  </span>
+
+  <svg class="friend-link-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+    <path d="M7 5h8v8M15 5 5 15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
+  </svg>
+</a>
+
+<style>
+  .friend-card {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    min-width: 0;
+    min-height: 136px;
+    padding: 1.35em;
+    box-sizing: border-box;
+    color: inherit;
+    text-decoration: none;
+    background: var(--color-surface);
+    border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+    border-radius: 18px;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .friend-card:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--accent) 28%, var(--color-border));
+    box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.12);
+  }
+
+  .friend-card-featured {
+    background: color-mix(in srgb, var(--accent) 4%, var(--color-surface));
+    border-color: color-mix(in srgb, var(--accent) 22%, var(--color-border));
+  }
+
+  .friend-avatar {
+    flex: 0 0 56px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  }
+
+  .friend-avatar-placeholder {
+    display: grid;
+    place-items: center;
+    color: var(--accent);
+    font-size: 1.15rem;
+    font-weight: 700;
+    background: color-mix(in srgb, var(--accent) 11%, var(--color-surface));
+  }
+
+  .friend-content {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.22em;
+  }
+
+  .friend-name {
+    color: var(--color-text-strong);
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  .friend-description,
+  .friend-domain {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .friend-description {
+    color: var(--color-text-secondary);
+    font-size: 0.88rem;
+  }
+
+  .friend-domain {
+    color: var(--color-text-muted);
+    font-size: 0.78rem;
+  }
+
+  .friend-link-icon {
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+    color: var(--color-text-tertiary);
+    transition: color 0.25s ease, transform 0.25s ease;
+  }
+
+  .friend-card:hover .friend-link-icon {
+    color: var(--accent);
+    transform: translate(2px, -2px);
+  }
+
+  @media (max-width: 720px) {
+    .friend-card {
+      min-height: 124px;
+      padding: 1.2em;
+      border-radius: 0;
+    }
+  }
+</style>

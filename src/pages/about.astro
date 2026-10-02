@@ -1,9 +1,10 @@
 ---
 import { Image } from 'astro:assets';
 import ContentCard from '../components/ContentCard.astro';
+import FriendCard from '../components/FriendCard.astro';
 import HeroHeader from '../components/HeroHeader.astro';
 import PageShell from '../layouts/PageShell.astro';
-import { heroConfig, profileConfig, siteTitle } from '../config';
+import { friendLinks, heroConfig, profileConfig, siteTitle } from '../config';
 import { buildSameAsLinks, getRenderableSocials, resolveSocialUrl } from '../lib/profile/social';
 
 const profile = profileConfig;
@@ -277,6 +278,22 @@ const personSchema = {
         font-weight: 600;
       }
 
+      .friends-section {
+        margin-top: 1.5em;
+      }
+
+      .friends-section-title {
+        margin: 0;
+        color: var(--color-text-strong);
+        font-size: 1.15rem;
+      }
+
+      .friends-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1em;
+      }
+
       @media (max-width: 980px) {
         .profile-card {
           grid-template-columns: 1fr;
@@ -309,6 +326,11 @@ const personSchema = {
         .github-card-header {
           align-items: flex-start;
           flex-direction: column;
+        }
+
+        .friends-grid {
+          grid-template-columns: 1fr;
+          gap: 0.75em;
         }
 
         .hero-title {
@@ -476,6 +498,16 @@ const personSchema = {
               过去一年的贡献数：
               <span data-github-contribution-count data-url={githubContributionApiUrl}>加载中…</span>
             </p>
+          </div>
+        </section>
+
+        <section class="friends-section" aria-labelledby="friends-title">
+          <div class="section-header">
+            <span class="section-number">03</span>
+            <h2 id="friends-title" class="friends-section-title">Friends / 友链</h2>
+          </div>
+          <div class="friends-grid">
+            {friendLinks.map((friend) => <FriendCard friend={friend} />)}
           </div>
         </section>
       </div>
